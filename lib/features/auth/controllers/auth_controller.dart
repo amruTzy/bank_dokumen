@@ -17,4 +17,22 @@ class AuthController {
       return false;
     }
   }
+
+  Future<String?> getUserRole(String username) async {
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first['role'];
+      }
+      return null;
+    } catch (e) {
+      print("Get role error: $e");
+      return null;
+    }
+  }
 }

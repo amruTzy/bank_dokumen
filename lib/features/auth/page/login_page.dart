@@ -1,5 +1,6 @@
 import 'package:bank_dokumen/features/admin/pages/dashboard_page.dart';
 import 'package:bank_dokumen/features/auth/controllers/auth_controller.dart';
+import 'package:bank_dokumen/features/user/pages/dashboard_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,18 +30,35 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isLoading = false);
 
     if (success) {
+      final role = await AuthController().getUserRole(username);
+
+      if (role == null) {
+        _showMessage("Gagal mendapatkan role user.");
+        return;
+      }
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
-      await prefs.setString('role', 'admin'); // jika nanti mau dipakai untuk hak akses
+      await prefs.setString('role', role);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const AdminDashboardScreen()),
-      );
+      if (role == 'admin') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminDashboardScreen()),
+        );
+      } else if (role == 'user') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UserDashboardPage()),
+        );
+      } else {
+        _showMessage("Role tidak dikenal: $role");
+      }
     } else {
       _showMessage('Username atau Password salah!');
     }
   }
+
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
