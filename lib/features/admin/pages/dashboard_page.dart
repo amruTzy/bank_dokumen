@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bank_dokumen/features/auth/page/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:bank_dokumen/features/admin/pages/view_dokomen_page.dart';
+
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
@@ -47,8 +49,13 @@ class AdminDashboardScreen extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.folder),
-              title: const Text('Data Dokumen'),
-              onTap: () {},
+              title: const Text('View Dokumen'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const DataDokumenPage()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.group),
